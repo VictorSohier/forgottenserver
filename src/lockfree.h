@@ -48,6 +48,18 @@ template <typename T, size_t CAPACITY>
 class LockfreePoolingAllocator : public std::allocator<T>
 {
 	public:
+		/*
+		 * To satisfy a static assert that probably didn't in 2019
+		 *
+		 * The commit this was actually fixed in:
+		 * https://github.com/otland/forgottenserver/commit/2e30d7da8747f0732f7ac80887e3d359b22e612b
+		 */
+		template <class U>
+		struct rebind
+		{
+			using other = LockfreePoolingAllocator<U, CAPACITY>;
+		};
+
 		LockfreePoolingAllocator() = default;
 
 		template <typename U, class = typename std::enable_if<!std::is_same<U, T>::value>::type>
